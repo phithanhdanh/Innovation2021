@@ -25,8 +25,10 @@ void setup() {
 void loop() {
 
   mpu.process();
-  if ((millis() - previousmillis > DELAY) && (mpu.printenable)) 
+  if ((millis() - previousmillis > DELAY) && (mpu.printenable)) {
     printdata(mpu.data);
+    previousmillis = millis();
+  }
 }
 
 void printdata(String*info){
