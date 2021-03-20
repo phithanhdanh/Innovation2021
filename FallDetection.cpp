@@ -21,6 +21,8 @@ void FallDetection::init(){
 
 void FallDetection::process(){
    n = 0;
+   printenable = false;
+   
    gx = (GyX+540)/131.07;
    gy = (GyY+200)/131.07;
    gz = (GyZ-287)/131.07;
@@ -51,6 +53,7 @@ void FallDetection::process(){
          else{ //user regained normal orientation
             trigger3=false; trigger3count=0;
             data[n++] = "TRIGGER 3 DEACTIVATED";
+            printenable = true;
          }
        }
     }
@@ -61,15 +64,16 @@ void FallDetection::process(){
      digitalWrite(11, HIGH);
      fall=false;
      demSoRung=0;
-    // exit(1);
      }
    if (trigger2count>=6){ //allow 0.5s for orientation change
      trigger2=false; trigger2count=0;
      data[n++] = "TRIGGER 2 DECACTIVATED";
+     printenable = true;
      }
    if (trigger1count>=6){ //allow 0.5s for AM to break upper threshold
      trigger1=false; trigger1count=0;
      data[n++] = "TRIGGER 1 DECACTIVATED";
+     printenable = true;
      }
    if (trigger2==true){
      trigger2count++;
@@ -78,6 +82,7 @@ void FallDetection::process(){
        trigger3=true; trigger2=false; trigger2count=0;
        data[n++] = String(angleChange);
        data[n++] = "TRIGGER 3 ACTIVATED";
+       printenable = true;
          }
      }
    if (trigger1==true){
@@ -86,12 +91,14 @@ void FallDetection::process(){
      ){ //if AM breaks upper threshold (3g)
        trigger2=true;
        data[n++] = "TRIGGER 2 ACTIVATED";
+       printenable = true;
        trigger1=false; trigger1count=0;
        }
      }
    if (AM>=18  && trigger2==false){ //if AM breaks lower threshold (0.4g)
      trigger1=true;
      data[n++] = "TRIGGER 1 ACTIVATED";
+     printenable = true;
      }
 
    data[n++] = "";

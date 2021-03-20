@@ -13,7 +13,7 @@ class FallDetection {
     void init();
     void process();
     String *data;
-
+    bool printenable;
 
   private:
   

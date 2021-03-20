@@ -1,4 +1,5 @@
 #define MAX 50
+#define DELAY 500
 
 #include <BluetoothSerial.h>
 #include <Wire.h>
@@ -8,6 +9,8 @@
 BluetoothSerial SerialBT;
 FallDetection mpu;
 
+unsigned long previousmillis;
+
 void setup() {
   Serial.begin(115200);
   SerialBT.begin("ESP32test"); //Bluetooth device name
@@ -16,12 +19,14 @@ void setup() {
   Wire.begin();
   mpu.init();
 
+  previousmillis = millis();
 }
 
 void loop() {
 
   mpu.process();
-  printdata(mpu.data);
+  if ((millis() - previousmillis > DELAY) && (mpu.printenable)) 
+    printdata(mpu.data);
 }
 
 void printdata(String*info){
