@@ -6,6 +6,10 @@
 #include "FallDetection.h"
 #include "HeartRate.h"
 
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
 BluetoothSerial SerialBT;
 FallDetection mpu;
 
@@ -19,6 +23,10 @@ void setup() {
   Wire.begin();
   mpu.init();
 
+  pinMode(25,INPUT);
+  pinMode(11, OUTPUT);
+  digitalWrite(11, HIGH);
+  
   previousmillis = millis();
 }
 
@@ -32,9 +40,9 @@ void loop() {
 }
 
 void printdata(String*info){
-  for (int i=0; i < MAX; i++){
-    if (info[i] == "") break;
+  for (int i=0; i < MAX, info[i] != ""; i++){
     Serial.println(info[i]);
     SerialBT.println(info[i]);
+    info[i] = "";
   }
 }
